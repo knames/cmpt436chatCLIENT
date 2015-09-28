@@ -8,11 +8,8 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io"
-	"log"
 	"net"
 	"strings"
-	"time"
 	"regexp"
 	"./util"
 )
