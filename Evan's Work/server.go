@@ -113,6 +113,9 @@ func HandleUserInput(input <-chan string, client *util.Client, props util.Proper
 						client.Room = body
 						util.SendClientMessage("enter", body, client, false, props)
 					}
+				// User wants to list all current rooms.
+				//case "list":
+					// Print out the list of rooms.
 
 				// User leaves the current room.
 				case "leave":

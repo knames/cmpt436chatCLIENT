@@ -90,6 +90,9 @@ func watchForConsoleIn(connect net.Conn)
 					// If user enters room.
 					case "enter":
 						sendCommandToServ("enter", command.Body, connect)
+					// If user wants to list rooms.
+					//case "list":
+					//	sendCommandToServ("list", "", connect)
 					// Default case is unknown commands.
 					default:
 						fmt.Printf("Unknown command: \"%s\"\n", command.Cmd)
@@ -145,6 +148,8 @@ func watchForServerIn(user string, props util.Properties, connect net.Conn)
 				// Handle cases of leaving and entering rooms now.
 				case "enter":
 					fmt.Printf(props.HasEnteredRoomMsg + "\n", Cmd.User, Cmd.Body)
+					//have a list of rooms and add to that list.
+					// Maybe through it in util file.
 
 				// Handle cases of leaving and entering rooms now.
 				case "leave":
