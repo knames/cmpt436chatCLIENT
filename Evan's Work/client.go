@@ -159,7 +159,7 @@ func watchForServerIn(user string, props util.Properties, connect net.Conn)
 func sendCommandToServ(cmd string, body string, connect net.Conn)
 {
 	// Encode the message so we can send to server.
-	msg := fmt.Sptrinf("/%v %v\, util.Encode(cmd), util.Encode(body));
+	msg := fmt.Sptrinf("/%v %v\n", util.Encode(cmd), util.Encode(body));
 	connect.Write([]byte(msg))
 }
 
