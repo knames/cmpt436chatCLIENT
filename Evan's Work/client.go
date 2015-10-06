@@ -18,7 +18,7 @@ import (
 var stdInMsgRegex, _ = regexp.Compile(`^\/([^\s]*)\s*(.*)$`)
 
 // Look for specific chat commands that involves users.
-var chatServRespRegex, _ = regexp.Compile(`^\/([^\s]*)\s(?:\[([^\]]*)\]?\s*(.*)$`)
+var chatServRespRegex, _ = regexp.Compile(`^\/([^\s]*)\s?(?:\[([^\]]*)\])?\s*(.*)$`)
 
 // Make a structure for Command details, may need the Command, username and body of the
 // Command.

@@ -23,10 +23,9 @@ var DECODE_ENCODED_TOKEN = []string {"%3A", "%5B", "%5D", "%2C", "%22", "%25"}
 
 // BEGIN STRUCTURES
 // Structure for the client username and connection details, like the conneciton and room.
-type Client struct
-{
+type Client struct {
 	// Client connection.
-	userConnection net.Conn
+	UserConnection net.Conn
 	// Client's room, or a global room.
 	Room string
 	// Config file of properties.
@@ -36,8 +35,7 @@ type Client struct
 }
 
 // Structure for logging files.
-type Action struct
-{
+type Action struct {
 	// The commands that were previously stated.
 	Comm string		`json:"comm"`
 	// Action specific, such as leaving and entering a room
@@ -52,8 +50,7 @@ type Action struct
 }
 
 // This is for the config file that we can load in.
-type Properties struct
-{
+type Properties struct {
 	// Server hostname, for clients to connect to.
 	Host string
 	// Chat server port.
@@ -95,7 +92,7 @@ func (client *Client) Close(sendMessage bool) {
 		SendClientMessage("disconnected", "", client, false, client.Prop)
 	}
 	// Close the connection to client and remove from user list.
-	client.userConnection.Close();
+	client.UserConnection.Close();
 	curClients = removeEntry(client, curClients);
 }
 
@@ -137,7 +134,7 @@ func SendClientMessage(msgType string, msg string, client *Client, thisOneOnly b
 	// Check if the message if only for the provided client, for server commands.
 	if (thisOneOnly) {
 		msg = fmt.Sprintf("/%v", msgType);
-		fmt.Fprintln(client.userConnection, msg)
+		fmt.Fprintln(client.UserConnection, msg)
 	} else if (client.User != "") {
 		// Now if it isn't send message to everyone.
 		// Log the action.
@@ -155,7 +152,7 @@ func SendClientMessage(msgType string, msg string, client *Client, thisOneOnly b
 					continue;
 				}
 			}
-			fmt.Fprintln(_client.userConnection, pLoad)
+			fmt.Fprintln(_client.UserConnection, pLoad)
 		}
 	}
 }
@@ -196,7 +193,7 @@ func replace(tokenReplacers []string, toTokens []string, val string) (string) {
 
 func LogAction(act string, msg string, client *Client, property Properties) {
 	// Get the IP and timestamp for it to be logged.
-	ipAddy := client.userConnection.RemoteAddr().String()
+	ipAddy := client.UserConnection.RemoteAddr().String()
 	stampOfTime := time.Now().Format(TIME_LAYOUT)
 
 	// Keep track of all actions in the action array.
@@ -265,7 +262,7 @@ func LoadConfig() Properties {
 	// }
 
 	var rturnVals = Properties {
-		Host: "localhost",
+		Host: "127.0.0.1",
 		Port: "25565",
 		HasEnteredRoomMsg: "[%s] has entered the room \"%s\"",
 		HasLeftRoomMsg: "[%s] has left the room \"%s\"",
