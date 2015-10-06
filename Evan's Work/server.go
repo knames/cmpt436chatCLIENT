@@ -2,16 +2,16 @@
 // connections.
 package main
 
-// Require specific packages.  Util will mainly consist of all client structures, 
+// Require specific packages.  Util will mainly consist of all client structures,
 // an error checker, encoding and decoding characters, logging, etc.
 // A major amount of work will be done within utils.
 import (
+	"./util"
 	"bufio"
 	"fmt"
 	"net"
-	"strings"
 	"regexp"
-	"./util"
+	"strings"
 )
 
 const MAINLOBBY = "lobby"
@@ -20,7 +20,7 @@ func main() {
 	// Possible we can make a file to load properites.
 	props := util.LoadConfig()
 	// This is for the tcp sockets.
-	pSocket, pError := net.Listen("tcp", ":" + props.Port)
+	pSocket, pError := net.Listen("tcp", ":"+props.Port)
 	util.CheckForError(pError, "Cannot create a server!")
 
 	// Have some output stating whether server gets started.
@@ -31,7 +31,7 @@ func main() {
 	for {
 		// First, we accept new connections.
 		newConn, errNum := pSocket.Accept()
-		
+
 		// Check for any connection issues.
 		util.CheckForError(errNum, "Cannot accpet new connections at this time.")
 
@@ -39,7 +39,7 @@ func main() {
 		// of the similar things. Let's send them into the main lobby first.
 		client := util.Client{UserConnection: newConn, Room: MAINLOBBY, Prop: props}
 		// Now register the client.
-		client.Register();
+		client.Register()
 
 		// Make the client request non-blocking so we don't run into issues.
 		mainChannel := make(chan string)
@@ -55,6 +55,7 @@ func main() {
 // and signal the main channel.
 func waitForUserIn(output chan string, client *util.Client) {
 	defer close(output)
+	fmt.Printf("Output is now closed.")
 
 	clientReader := bufio.NewReader(client.UserConnection)
 	for {
@@ -62,10 +63,10 @@ func waitForUserIn(output chan string, client *util.Client) {
 		if errNo != nil {
 			// If there is no username, remove the client
 			// from the list.
-			client.Close(true);
+			client.Close(true)
 			return
 		}
-	output <- string(curLine)
+		output <- string(curLine)
 	}
 }
 
@@ -73,48 +74,48 @@ func waitForUserIn(output chan string, client *util.Client) {
 // we can use creation of rooms, joining, list, and sending messages to a room, and leave rooms.
 func HandleUserInput(input <-chan string, client *util.Client, props util.Properties) {
 	for {
-		curMessage := <- input
+		curMessage := <-input
 		// Check if message is not blank.
-		if (curMessage != "") {
+		if curMessage != "" {
 			curMessage = strings.TrimSpace(curMessage)
 			// Parse out messages.
 			curAction, body := getAction(curMessage)
 
 			// After white space trimming, and getting the action (join, leave, etc)
 			// let's start using case statements.
-			if (curMessage != "") {
+			if curMessage != "" {
 				switch curAction {
-					// user sends a message.
-					case "message":
-						util.SendClientMessage("message", body, client, false, props)
-					// user provides their username.
-					case "user":
-						util.SendClientMessage("connect", "", client, false, props)
+				// user sends a message.
+				case "message":
+					util.SendClientMessage("message", body, client, false, props)
+				// user provides their username.
+				case "user":
+					util.SendClientMessage("connect", "", client, false, props)
 
-					// The user disconnects.
-					case "disconnect":
-						client.Close(false);
-	
-					// User enters a room.
-					case "enter":
-						// Make sure body (anything after /case is not empty.
-						if (body != "") {
-							client.Room = body
-							util.SendClientMessage("enter", body, client, false, props)
-						}
-					// User wants to list all current rooms.
-					//case "list":
-						// Print out the list of rooms.
-	
-					// User leaves the current room.
-					case "leave":
-						// Check if room is not the main lobby.
-						if (client.Room != MAINLOBBY) {
-							util.SendClientMessage("leave", client.Room, client, false, props)
-							client.Room = MAINLOBBY
-						}
-					default:
-						util.SendClientMessage("unrecognized", curAction, client, true, props)
+				// The user disconnects.
+				case "disconnect":
+					client.Close(false)
+
+				// User enters a room.
+				case "enter":
+					// Make sure body (anything after /case is not empty.
+					if body != "" {
+						client.Room = body
+						util.SendClientMessage("enter", body, client, false, props)
+					}
+				// User wants to list all current rooms.
+				//case "list":
+				// Print out the list of rooms.
+
+				// User leaves the current room.
+				case "leave":
+					// Check if room is not the main lobby.
+					if client.Room != MAINLOBBY {
+						util.SendClientMessage("leave", client.Room, client, false, props)
+						client.Room = MAINLOBBY
+					}
+				default:
+					util.SendClientMessage("unrecognized", curAction, client, true, props)
 				}
 			}
 		}
@@ -126,7 +127,7 @@ func getAction(message string) (string, string) {
 	thisRegEx, _ := regexp.Compile(`^\/([^\s]*)\s*(.*)$`)
 	result := thisRegEx.FindAllStringSubmatch(message, -1)
 	// If length is one, then we return the results in individual values.
-	if (len(result) == 1) {
+	if len(result) == 1 {
 		return result[0][1], result[0][2]
 	}
 	// Otherwise return a blank statement.
