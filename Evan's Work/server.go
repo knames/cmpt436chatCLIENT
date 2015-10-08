@@ -55,7 +55,7 @@ func main() {
 // and signal the main channel.
 func waitForUserIn(output chan string, client *util.Client) {
 	defer close(output)
-	fmt.Printf("Output is now closed.")
+	// fmt.Printf("Output is now closed.")
 
 	clientReader := bufio.NewReader(client.UserConnection)
 	for {
@@ -90,6 +90,7 @@ func HandleUserInput(input <-chan string, client *util.Client, props util.Proper
 					util.SendClientMessage("message", body, client, false, props)
 				// user provides their username.
 				case "user":
+					client.User = body
 					util.SendClientMessage("connect", "", client, false, props)
 
 				// The user disconnects.
@@ -124,12 +125,10 @@ func HandleUserInput(input <-chan string, client *util.Client, props util.Proper
 
 // Now we parse out the message contents to return individual values.
 func getAction(message string) (string, string) {
-	thisRegEx, _ := regexp.Compile(`^\/([^\s]*)\s*(.*)$`)
-	result := thisRegEx.FindAllStringSubmatch(message, -1)
-	// If length is one, then we return the results in individual values.
-	if len(result) == 1 {
-		return result[0][1], result[0][2]
-	}
-	// Otherwise return a blank statement.
-	return "", ""
+  actionRegex, _ := regexp.Compile(`^\/([^\s]*)\s*(.*)$`)
+  res := actionRegex.FindAllStringSubmatch(message, -1)
+  if (len(res) == 1) {
+    return res[0][1], res[0][2]
+  }
+  return "", ""
 }
