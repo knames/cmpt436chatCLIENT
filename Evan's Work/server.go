@@ -83,7 +83,7 @@ func HandleUserInput(input <-chan string, client *util.Client, props util.Proper
 
 			// After white space trimming, and getting the action (join, leave, etc)
 			// let's start using case statements.
-			if curMessage != "" {
+			if curAction != "" {
 				switch curAction {
 				// user sends a message.
 				case "message":
