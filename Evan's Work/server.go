@@ -47,7 +47,7 @@ func main() {
 		go HandleUserInput(mainChannel, &client, props)
 
 		// Tell the client we are ready to accept anything they want to do.
-		util.SendClientMessage("Chat Ready!", props.Port, &client, true, props)
+		util.SendClientMessage("ready", props.Port, &client, true, props)
 	}
 }
 
