@@ -15,8 +15,12 @@ type Client struct {
 	Outgoing chan string
 	Conn net.Conn
 	Quit chan bool
+	CurrentRoom string 
 	ClientList *list.List
 }
+
+var Rooms = []string{"lobby"}
+
 
 // reads the bytes
 func (c *Client) Read(buffer []byte) bool {
@@ -135,7 +139,7 @@ func ClientHandler(conn net.Conn, ch chan string, clientList *list.List) {
     go ClientSender(newClient)
     go ClientReader(newClient)
     clientList.PushBack(*newClient)
-    ch <-string(name + " has joined the chat")
+    ch <-string(name + " has joined %s",client.CurrentRoom)
 }
 
 
