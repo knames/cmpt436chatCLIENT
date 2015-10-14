@@ -141,7 +141,7 @@ func SendClientMessage(messageType string, message string, client *Client, thisC
 		LogAction(messageType, message, client, props)
 
 		// construct the payload to be sent to clients
-		 pLoad := fmt.Sprintf("/%v [%v] %v", messageType, client.User, message)
+		pLoad := fmt.Sprintf("/%v [%v] %v", messageType, client.User, message)
 
 		for _, _client := range curClients {
 			// write the message to the client
@@ -220,7 +220,7 @@ func LogAction(act string, msg string, client *Client, property Properties) {
 			fmt.Printf("Logging values %s, %s, %s, %s\n", act, msg, client.User, client.Room)
 
 			messageLog := fmt.Sprintf("\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\"\n",
-				EncodeCSV(client.User), EncodeCSV(act), EncodeCSV(msg), EncodeCSV(client.Room), 
+				EncodeCSV(client.User), EncodeCSV(act), EncodeCSV(msg), EncodeCSV(client.Room),
 				EncodeCSV(stampOfTime), EncodeCSV(ipAddy))
 
 			// Open the log file, check for errors.

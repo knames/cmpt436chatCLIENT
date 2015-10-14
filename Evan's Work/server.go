@@ -14,6 +14,9 @@ import (
 	"strings"
 )
 
+// Array of rooms to list.
+var rooms = [200]string{"lobby"}
+
 const MAINLOBBY = "lobby"
 
 func main() {
@@ -102,10 +105,23 @@ func HandleUserInput(input <-chan string, client *util.Client, props util.Proper
 					// Make sure body (anything after /case is not empty.
 					if body != "" {
 						client.Room = body
+						//fmt.Printf("%s", rooms[0])
 						util.SendClientMessage("enter", body, client, false, props)
+						for i := 0; i < 200; i++ {
+							if rooms[i] != "" {
+								rooms[i] = client.Room
+								fmt.Printf("%s\n", rooms[i])
+							}
+						}
 					}
 				// User wants to list all current rooms.
-				//case "list":
+				case "list":
+					for i := 0; i < 200; i++ {
+						if rooms[i] != "" {
+							util.SendClientMessage("list", rooms[i], client, false, props)
+						}
+						//fmt.Printf("Did not find room.\n")
+					}
 				// Print out the list of rooms.
 
 				// User leaves the current room.
@@ -125,10 +141,10 @@ func HandleUserInput(input <-chan string, client *util.Client, props util.Proper
 
 // Now we parse out the message contents to return individual values.
 func getAction(message string) (string, string) {
-  actionRegex, _ := regexp.Compile(`^\/([^\s]*)\s*(.*)$`)
-  res := actionRegex.FindAllStringSubmatch(message, -1)
-  if (len(res) == 1) {
-    return res[0][1], res[0][2]
-  }
-  return "", ""
+	actionRegex, _ := regexp.Compile(`^\/([^\s]*)\s*(.*)$`)
+	res := actionRegex.FindAllStringSubmatch(message, -1)
+	if len(res) == 1 {
+		return res[0][1], res[0][2]
+	}
+	return "", ""
 }
