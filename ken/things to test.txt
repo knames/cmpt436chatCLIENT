@@ -1,0 +1,3 @@
+ to test:
+	/ctest creates channel called /ctest
+	/jtest attempts to join /jtest
