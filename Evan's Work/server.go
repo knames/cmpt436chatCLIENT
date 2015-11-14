@@ -15,7 +15,7 @@ import (
 )
 
 // Array of rooms to list.
-var rooms = [200]string{"lobby"}
+var rooms = [10]string{"lobby", "", "", "", "", "", "", "", "", ""}
 
 const MAINLOBBY = "lobby"
 
@@ -107,21 +107,26 @@ func HandleUserInput(input <-chan string, client *util.Client, props util.Proper
 						client.Room = body
 						//fmt.Printf("%s", rooms[0])
 						util.SendClientMessage("enter", body, client, false, props)
-						for i := 0; i < 200; i++ {
-							if rooms[i] != "" {
+						for i := range rooms {
+							if rooms[i] == "" || rooms[i] != client.Room {
 								rooms[i] = client.Room
-								fmt.Printf("%s\n", rooms[i])
+								break
+								//fmt.Printf("%s\n", rooms[i])
 							}
 						}
 					}
 				// User wants to list all current rooms.
 				case "list":
-					for i := 0; i < 200; i++ {
-						if rooms[i] != "" {
-							util.SendClientMessage("list", rooms[i], client, false, props)
+					// fmt.Printf("I got here")
+					for j := range rooms {
+						if rooms[j] != "" {
+							fmt.Printf("Found room %s\n", rooms[j])
+							util.SendClientMessage("list", rooms[j], client, true, props)
+							continue
 						}
 						//fmt.Printf("Did not find room.\n")
 					}
+
 				// Print out the list of rooms.
 
 				// User leaves the current room.
