@@ -79,7 +79,7 @@ func (cRoom *CRoom) Delete() {
 }
 
 func (cRoom *CRoom) AddClient(client *Client) {
-  //log.Println("Adding a new client")
+  log.Println("Adding a new client")
   client.Mutex.Lock()
   defer client.Mutex.Unlock()
   
@@ -95,6 +95,7 @@ func (cRoom *CRoom) AddClient(client *Client) {
 func (cRoom *CRoom) removeClient(client *Client) {
   client.Mutex.RLock()
   cRoom.Broadcast(fmt.Sprintf(NOTE_ROOM_LEAVE, client.Name))
+  client.Mutex.RUnlock()
   for i, oClients := range cRoom.curClients {
     if client == oClients {
       cRoom.curClients = append(cRoom.curClients[:i], cRoom.curClients[i+1:]...)
@@ -156,7 +157,7 @@ func getCRoomName() []string {
   defer cRoomMutex.RUnlock()
   
   keys := make([]string, 0, len(cRooms))
-  for k:= range cRooms {
+  for k := range cRooms {
     keys = append(keys, k)
   }
   return keys

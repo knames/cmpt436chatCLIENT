@@ -75,8 +75,7 @@ func usrParse(usrStr string) (err error) {
 	case strings.HasPrefix(usrStr, COMM_LEAVEROOM):
 		err = client.Call("Receiver.LeaveCRoom", &Token, nil)
 	case strings.HasPrefix(usrStr, COMM_LISTROOMS):
-		cName := strings.TrimSuffix(strings.TrimPrefix(usrStr, COMM_LISTROOMS+" "), "\n")
-		err = client.Call("Receiver.ListCRooms", Args{Token, cName}, nil)
+		err = client.Call("Receiver.ListCRooms", &Token, nil)
 	case strings.HasPrefix(usrStr, COMM_HELPCHAT):
 		fmt.Print(MESS_HELP)
 	case strings.HasPrefix(usrStr, COMM_CHANGENAME):

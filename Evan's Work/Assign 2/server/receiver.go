@@ -86,7 +86,7 @@ func (r *Receiver) CreateCRoom(args *Args, _ *struct{}) error {
     log.Println(err)
     return err
   }
-  client.outMsg <- fmt.Sprintf(NOTE_ROOM_CREATE)
+  client.outMsg <- fmt.Sprintf(NOTE_ROOM_CREATE, cRoom.cName)
   return nil
 }
 
@@ -104,8 +104,9 @@ func (r *Receiver) JoinCRoom (args *Args, _ *struct{}) error {
     return err
   }
   client.Mutex.RLock()
+  defer client.Mutex.RUnlock()
   oldCRoom := client.CRoom
-  client.Mutex.RUnlock()
+  
   if oldCRoom != nil {
     oldCRoom.leave <- client
   }
@@ -120,13 +121,10 @@ func (r *Receiver) LeaveCRoom(tok *string, _ *struct{}) error {
     log.Println(err)
     return err
   }
-  if client.CRoom == nil {
-    log.Println("User tried to leave lobby")
-    return err
-  }
+  log.Println(client.Name)
   client.Mutex.RLock()
   defer client.Mutex.RUnlock()
-  log.Println(client)
+  
   client.CRoom.leave <- client
   return nil
 }
