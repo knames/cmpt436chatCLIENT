@@ -1,0 +1,20 @@
+module chat {
+	interface ChatClient {
+		void recieve(in string nick, in string text);
+	};
+	exception NameAlreadyUsed {};
+	exception UnknownID {};
+	exception roomDoesNotExist {};
+	exception roomAlreadyExists {};
+	interface ChatServer {
+		string join(in string nick, in ChatClient c) 
+			raises (NameAlreadyUsed);
+		void leave(in string id) raises (UnknownID);
+		void send(in string id, in string text) raises (UnknownID);
+		void create(in string roomName, in ChatClient c)
+			raises (roomAlreadyExists);
+		void enter(in string roomName, in ChatClient c)
+			raises (roomDoesNotExist);
+		void list();
+	};
+};
